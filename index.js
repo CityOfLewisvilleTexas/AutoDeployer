@@ -7,7 +7,7 @@ const { exec } = require('child_process')
 const PORT = 3000
 require('dotenv').config()
 //files
-const queryExecutor = require('./utils/queryExecutor')
+const executor = require('./utils/executor')
 
 //Body Parser
 app.use(bodyParser.json())
@@ -23,7 +23,7 @@ app.use(function (req, res, next) {
 
 app.get('/', (req, res) => {
     let query = `select * from CACHE_githubDeployments`
-   queryExecutor(res, query)
+   executor(res, query)
 })
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
