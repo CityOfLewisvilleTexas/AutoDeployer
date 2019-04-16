@@ -1,0 +1,31 @@
+{
+  "name": "autodeployer",
+  "version": "1.0.0",
+  "description": "Node.js service handling sql server stored procedure for scheduling Github Continuous Integration on ax1viis1 Application server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/CityOfLewisvilleTexas/autodeployer.git"
+  },
+  "keywords": [
+    "Node.js",
+    "SQL",
+    "Server",
+    "Express",
+    "fs",
+    "activedirectory",
+    "forever",
+    "lodash",
+    "nodemon",
+    "socket.io"
+  ],
+  "author": "Cade Holmes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityOfLewisvilleTexas/autodeployer/issues"
+  },
+  "homepage": "https://github.com/CityOfLewisvilleTexas/autodeployer#readme"
+}
