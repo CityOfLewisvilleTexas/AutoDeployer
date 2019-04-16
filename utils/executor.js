@@ -1,8 +1,9 @@
 const sql = require('mssql');
-const queryHandler = require('./queryHandler')
+const queryHandler = require('./handler')
 require('dotenv').config()
 
 const sqlConfig = {
+    //see .env file
     user: process.env.SQLUSER,
     password: process.env.SQLPASSWORD,
     server: process.env.SERVER,
