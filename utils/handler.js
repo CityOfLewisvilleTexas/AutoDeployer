@@ -3,32 +3,75 @@ const sql = require('mssql');
 const { exec } = require('child_process')
 
 module.exports = (payload, response) => {
-    //@TODO: need to dynamically set each path
-    // to make ajax call to git repo AND resolve git pull/clone
-    return new Promise((resolve, reject) => {
-        let testObj = payload.recordset[10] //use for testing instances, uses local env path (instead of https://apps.cityoflewisville.com/)
-        if (fs.existsSync(testObj['deploymentURL'])) {
-            exec(
-                `git pull ${testObj['gitURL']}`,
-                { cwd: 'C:\\Users\\cholmes\\Desktop\\abc2\\' },
-                (err, stdout, stderr) => {
-                    if (err) {
-                        console.dir(`${stderr}`,)
-                    }
-                
-                    console.log(stdout)
-                    resolve()
-                }
-            )
-        }
-        // else {
-        //     exec(
-        //         `git clone ${testObj['gitURL']}`,
-        //         { cwd: `../${testObj[deploymentURL]}`},
+    let items = payload.recordset
+    getDirName = (path) => {
+        return path.replace('git@github.com:CityOfLewisvilleTexas/', '')
+    }
+    items.forEach(item => {
+        item.deploymentURL.includes('https://apps.cityoflewisville.com/')
+            ? item.deploymentURL = item.deploymentURL.replace('https://apps.cityoflewisville.com/', 'C:\\inetpub\\wwwroot\\')
+            : item.deploymentURL = item.deploymentURL
 
-        //     )
-        // }
-        response.send(payload.recordset)
-        sql.close()
+        return new Promise((resolve, reject) => {
+            if (fs.existsSync(item.deploymentURL)) {
+                exec(`git init`, { cwd: item.deploymentURL }, (stdout, stderr) => {
+                    if (stderr) {
+                        if (stderr.includes('fatal: not a git repository')) {
+                            console.log('No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.')
+                            return
+                        }
+                    }
+                    else {
+                    stdout === null
+                        ? console.log(`Git initialized repository in ${item.deploymentURL}`)
+                        : console.log(stdout)
+                    }
+
+                })
+                exec(
+                    `git pull ${item.gitURL} master`,
+                    { cwd: item.deploymentURL },
+                    (stdout, stderr) => {
+                        if (stderr) {
+                            console.log(stderr)
+                        }
+                        else {
+                        stdout === null
+                            ? console.log(`From ${item.gitURL} * branch master -> FETCH_HEAD`)
+                            : console.log(stdout)
+                        resolve()
+                        }
+                    }
+                )
+            }
+            else if (!fs.existsSync(item.deploymentURL)) {
+                //prior to clone, make directory
+                item.deploymentURL = 'C:\\inetpub\\wwwroot\\' //'C:\\Users\\cholmes\\Desktop\\'
+                exec(`mkdir ${getDirName(item.gitURL)}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
+                    if (stderr) {
+                        console.log(stderr)
+                    }
+                    else {
+                    stdout === null
+                        ? console.log(`Directory ${getDirName(item.gitURL)} created on ${item.deploymentURL}`)
+                        : console.log(stdout)
+                    }
+                })
+                exec(`git clone ${item.gitURL}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
+                    if (stderr) {
+                        console.log(stderr)
+                    }
+                    else {
+                    stdout === null
+                        ? console.log(`Successfully Cloned ${getDirName(item.gitURL)} into ${item.deploymentURL}`)
+                        : console.log(stdout)
+
+                    resolve()
+                    }
+                })
+            }
+        })
     })
+    sql.close()
+    response.send(payload.recordset)
 }
