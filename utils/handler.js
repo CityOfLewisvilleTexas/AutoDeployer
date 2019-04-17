@@ -45,8 +45,9 @@ module.exports = (payload, response) => {
                 )
             }
             else if (!fs.existsSync(item.deploymentURL)) {
-                //prior to clone, make directory
-                item.deploymentURL = '\\\\ax1viis1\\c$\\inetpub\\wwwroot' //'C:\\Users\\cholmes\\Desktop\\'
+                //@OTODO: \\\\ax1viis1\\c$\\inetpub\\wwwroot Does not work
+                //"UNC paths are not supported.  Defaulting to Windows directory."
+                item.deploymentURL = 'C:\\Users\\cholmes\\Desktop' //'C:\\Users\\cholmes\\Desktop\\'
                 exec(`mkdir ${getDirName(item.gitURL)}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
                     if (stderr) {
                         console.log(stderr)
