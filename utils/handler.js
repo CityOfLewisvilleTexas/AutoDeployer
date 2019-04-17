@@ -46,7 +46,7 @@ module.exports = (payload, response) => {
             }
             else if (!fs.existsSync(item.deploymentURL)) {
                 //prior to clone, make directory
-                item.deploymentURL = 'C:\\inetpub\\wwwroot\\' //'C:\\Users\\cholmes\\Desktop\\'
+                item.deploymentURL = '\\\\ax1viis1\\c$\\inetpub\\wwwroot' //'C:\\Users\\cholmes\\Desktop\\'
                 exec(`mkdir ${getDirName(item.gitURL)}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
                     if (stderr) {
                         console.log(stderr)
