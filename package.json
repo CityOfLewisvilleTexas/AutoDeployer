@@ -30,6 +30,7 @@
   "homepage": "https://github.com/CityOfLewisvilleTexas/autodeployer#readme",
   "dependencies": {
     "activedirectory": "^0.7.2",
+    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "child_process": "^1.0.2",
     "dotenv": "^7.0.0",

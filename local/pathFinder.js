@@ -4,9 +4,7 @@ const { exec } = require('child_process')
 
 module.exports = (payload, response) => {
     let items = payload.recordset
-    getDirName = (path) => {
-        return path.replace('git@github.com:CityOfLewisvilleTexas/', '')
-    }
+
     items.forEach(item => {
         item.deploymentURL.includes('https://apps.cityoflewisville.com/')
             ? item.deploymentURL = item.deploymentURL.replace('https://apps.cityoflewisville.com/', 'C:\\inetpub\\wwwroot\\')
@@ -47,7 +45,7 @@ module.exports = (payload, response) => {
             else if (!fs.existsSync(item.deploymentURL)) {
                 //@OTODO: \\\\ax1viis1\\c$\\inetpub\\wwwroot Does not work
                 //"UNC paths are not supported.  Defaulting to Windows directory."
-                item.deploymentURL = 'C:\\Users\\cholmes\\Desktop' //'C:\\Users\\cholmes\\Desktop\\'
+                item.deploymentURL = 'C:\\Users\\cholmes\\Desktop'
                 exec(`mkdir ${getDirName(item.gitURL)}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
                     if (stderr) {
                         console.log(stderr)

@@ -1,7 +1,5 @@
 const sql = require('mssql');
-const windowsHandler = require('./windowsHandler')
-const macHandler = require('./macHandler')
-const detectOS = require('../os/detect')
+const windowsHandler = require('./pathFinder')
 require('dotenv').config()
 
 const sqlConfig = {
@@ -21,18 +19,20 @@ module.exports = (res, query) => {
     sql.connect(sqlConfig, function (err) {
         if (err) {
             console.log("Error while connecting database :- " + err);
+            res.redirect('/get')
+            sql.close
         }
         else {
             // create Request object
             var request = new sql.Request();
             // query to the database
             request.query(query, function (err, res) {
+                console.log(detectOS)
                 if (err) {
-                    console.log("Error while querying database :- " + err);
+                    console.log("Error while querying database : " + err);
                     res.send(err);
                 }
                 else {
-                    console.log(detectOS)
                     if(detectOS == 'windows') {
                         windowsHandler(res, response)
                     }
