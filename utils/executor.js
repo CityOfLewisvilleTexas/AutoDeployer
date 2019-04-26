@@ -1,5 +1,7 @@
 const sql = require('mssql');
-const queryHandler = require('./handler')
+const windowsHandler = require('./windowsHandler')
+const macHandler = require('./macHandler')
+const detectOS = require('../os/detect')
 require('dotenv').config()
 
 const sqlConfig = {
@@ -30,7 +32,16 @@ module.exports = (res, query) => {
                     res.send(err);
                 }
                 else {
-                    queryHandler(res, response)
+                    console.log(detectOS)
+                    if(detectOS == 'windows') {
+                        windowsHandler(res, response)
+                    }
+                    else if(detectOS == 'mac') {
+                        macHandler(res, response)
+                    }
+                    else {
+                        console.log('Could not determine OS')
+                    }
                 }
             });
         }

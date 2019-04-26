@@ -1,3 +1,4 @@
+const os = require('os')
 const sql = require('mssql');
 const express = require('express');
 const app = express();
@@ -8,7 +9,7 @@ const PORT = 3000
 require('dotenv').config()
 //files
 const executor = require('./utils/executor')
-
+const detectOS = require('./os/detect')
 //Body Parser
 app.use(bodyParser.json())
 
@@ -23,9 +24,15 @@ app.use(function (req, res, next) {
 
 app.get('/', (req, res) => {
     let query = `select * from CACHE_githubDeployments`
+   detectOS()
    executor(res, query)
 })
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 
-
+/*
+axios.post('http://query.cityoflewisville.com/v2/', {
+	webservice: 'ITS/Get Github Deployment URLS'
+}).then(function(response) {
+    console.log(response['data'])})
+*/
