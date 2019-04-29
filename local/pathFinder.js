@@ -5,7 +5,11 @@ const { getDirName } = require( '../helpers')
 
 module.exports = (payload, response) => {
     let items = payload.recordset
+<<<<<<< HEAD:local/pathFinder.js
    
+=======
+
+>>>>>>> cfddee3db84e953e6f0c8d9be1c1519ad91ba585:local/pathFinder.js
     items.forEach(item => {
         item.deploymentURL = item.deploymentURL.replace(
             "https://apps.cityoflewisville.com/",
@@ -42,6 +46,11 @@ module.exports = (payload, response) => {
                 )
             }
             else if (!fs.existsSync(item.deploymentURL)) {
+<<<<<<< HEAD:local/pathFinder.js
+=======
+                //@OTODO: \\\\ax1viis1\\c$\\inetpub\\wwwroot Does not work
+                //"UNC paths are not supported.  Defaulting to Windows directory."
+>>>>>>> cfddee3db84e953e6f0c8d9be1c1519ad91ba585:local/pathFinder.js
                 item.deploymentURL = 'C:\\Users\\cholmes\\Desktop'
                 exec(`mkdir ${getDirName(item.gitURL)}`, { cwd: item.deploymentURL }, (stdout, stderr) => {
                     if (stderr) {
