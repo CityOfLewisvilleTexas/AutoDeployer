@@ -9,15 +9,9 @@ const { exec } = require('child_process')
 const axios = require('axios')
 const PORT = 3000
 //files
-<<<<<<< HEAD
 const execute = require('./local/execute')
 const pathHandler = require('./remote/pathHandler')
 
-=======
-const executor = require('./local/exec')
-const pathHandler = require('./remote/pathHandler')
-const { detectOS } = require('./helpers')
->>>>>>> cfddee3db84e953e6f0c8d9be1c1519ad91ba585
 //Body Parser
 app.use(bodyParser.json())
 //CORS Middleware
@@ -28,15 +22,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> cfddee3db84e953e6f0c8d9be1c1519ad91ba585
 //if cxn strings to DB
 app.get('/', (req, res) => {
     let query = `select * from CACHE_githubDeployments`
     
-<<<<<<< HEAD
     execute(res, query)
 })
 
@@ -48,9 +37,6 @@ app.get('/get', (req, res, next) => {
 
         pathHandler(response, res)
     }).catch((err) => err)
-=======
-    exec(res, query)
->>>>>>> cfddee3db84e953e6f0c8d9be1c1519ad91ba585
 })
 
 //else, hit api
