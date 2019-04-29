@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const queryHandler = require('./handler')
+const pathFinder = require('./pathFinder')
 require('dotenv').config()
 
 const sqlConfig = {
@@ -19,6 +19,7 @@ module.exports = (res, query) => {
     sql.connect(sqlConfig, function (err) {
         if (err) {
             console.log("Error while connecting database :- " + err);
+            res.redirect('/get')
         }
         else {
             // create Request object
@@ -30,7 +31,7 @@ module.exports = (res, query) => {
                     res.send(err);
                 }
                 else {
-                    queryHandler(res, response)
+                    pathFinder(res, response)
                 }
             });
         }
