@@ -4,14 +4,18 @@ const { exec } = require('child_process')
 const { getDirName } = require( '../helpers')
 
 module.exports = (payload, response) => {
-    let items = payload.recordset
-   
+    const items = payload.recordset
+    let scripts = []
     items.forEach(item => {
         item.deploymentURL = item.deploymentURL.replace(
             "https://apps.cityoflewisville.com/",
             'C:\\Users\\cholmes\\Desktop\\'     // For prod, this will need to change: "C:\\inetpub\\wwwroot\\"
           )
-       
+            if(item.buildScripts) {
+                scripts.push(item.buildScripts)
+                console.log(scripts)
+            }
+
             if (fs.existsSync(item.deploymentURL)) {
                 exec(`git init`, { cwd: item.deploymentURL }, (stdout, stderr) => {
                     if (stderr) {
@@ -40,6 +44,9 @@ module.exports = (payload, response) => {
                         }
                     }
                 )
+                scripts ? 
+                exec(...scripts, { cwd: item.deploymentURL}, (stdout, stderr) => { stderr ? console.log(stderr) : stdout === null ? console.log('script executed') : console.log(stdout)}) 
+                : console.log('script error!')
             }
             else if (!fs.existsSync(item.deploymentURL)) {
                 item.deploymentURL = 'C:\\Users\\cholmes\\Desktop'
