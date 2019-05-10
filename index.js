@@ -34,26 +34,8 @@ app.get('/get', (req, res, next) => {
     axios.post('http://query.cityoflewisville.com/v2/', {
         webservice: 'ITS/Get Github Deployment URLs'
     }).then((response) => {
-
-        pathHandler(response, res)
-    }).catch((err) => err)
-})
-
-//else, hit api
-app.get('/get', (req, res, next) => {
-    axios.post('http://query.cityoflewisville.com/v2/', {
-        webservice: 'ITS/Get Github Deployment URLs'
-    }).then((response) => {
-
         pathHandler(response, res)
     }).catch((err) => err)
 })
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
-
-/*
-axios.post('http://query.cityoflewisville.com/v2/', {
-	webservice: 'ITS/Get Github Deployment URLS'
-}).then(function(response) {
-    console.log(response['data'])})
-*/

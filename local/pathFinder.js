@@ -9,7 +9,7 @@ module.exports = (payload, response) => {
     items.forEach(item => {
         item.deploymentURL = item.deploymentURL.replace(
             "https://apps.cityoflewisville.com/",
-            "C:\\inetpub\\wwwroot\\"
+            'C:\\Users\\cholmes\\Desktop\\'     // For prod, this will need to change: "C:\\inetpub\\wwwroot\\"
           )
        
             if (fs.existsSync(item.deploymentURL)) {
