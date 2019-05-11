@@ -70,6 +70,9 @@ module.exports = (payload, response) => {
                         : console.log(stdout)
                     }
                 })
+                scripts ? 
+                exec(...scripts, { cwd: item.deploymentURL}, (stdout, stderr) => { stderr ? console.log(stderr) : stdout === null ? console.log('script executed') : console.log(stdout)}) 
+                : console.log('script error!')
             }
     })
     sql.close()
