@@ -29,7 +29,7 @@ module.exports = (res, query) => {
           console.log("Error while querying database :- " + err);
           res.send(err);
         } else {
-          pathFinder(res, response);
+          pathFinder(res);
         }
       });
     }
