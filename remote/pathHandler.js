@@ -98,7 +98,7 @@ module.exports = payload => {
           }
         }
       );
-      scripts
+      scripts.length > 0
         ? exec(...scripts, { cwd: item.deploymentURL }, (stdout, stderr) => {
             stderr
               ? console.log(stderr)
