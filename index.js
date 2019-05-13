@@ -1,8 +1,6 @@
 require("dotenv").config();
 const { detectOS } = require("./helpers");
 const axios = require("axios");
-
-//files
 const pathHandler = require("./remote/pathHandler");
 
 (() => {

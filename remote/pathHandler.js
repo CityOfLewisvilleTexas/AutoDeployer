@@ -7,7 +7,6 @@ module.exports = payload => {
   const OS = detectOS();
   let items = payload["data"][0];
   let scripts = [];
-
   items.forEach(item => {
     OS == "win32"
       ? (item.deploymentURL = item.deploymentURL.replace(
@@ -19,10 +18,10 @@ module.exports = payload => {
           "/Users/cadeholmes/prj/"
         ));
 
-    if (item.buildScripts) {
-      scripts.push(item.buildScripts);
-      console.log(scripts);
-    }
+    item.buildScripts
+      ? (scripts = item.buildScripts.split(",").join(" && "))
+      : (scripts = []);
+    console.log(scripts);
 
     if (fs.existsSync(item.deploymentURL)) {
       exec(`git init`, { cwd: item.deploymentURL }, (stdout, stderr) => {
@@ -52,8 +51,8 @@ module.exports = payload => {
           }
         }
       );
-      scripts
-        ? exec(...scripts, { cwd: item.deploymentURL }, (stdout, stderr) => {
+      scripts.length > 0
+        ? exec(scripts, { cwd: item.deploymentURL }, (stdout, stderr) => {
             stderr
               ? console.log(stderr)
               : stdout === null
