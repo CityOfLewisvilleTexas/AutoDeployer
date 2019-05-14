@@ -4,9 +4,6 @@ const axios = require("axios");
 const pathHandler = require("./remote/pathHandler");
 
 (() => {
-  let OS = detectOS();
-  console.log(OS);
-
   axios
     .post("http://query.cityoflewisville.com/v2/", {
       webservice: "ITS/Get Github Deployment URLs"
