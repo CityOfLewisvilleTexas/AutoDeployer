@@ -47,14 +47,14 @@ module.exports = payload => {
           stdout === null
             ? console.log(
                 `Git initialized repository in ${item.deploymentURL}`
-              ) &&
+              ) ||
               statusHandler(
                 `Git initialized repository in ${item.deploymentURL}`,
                 item.deploymentURL,
                 item.gitURL,
                 item.userEmail
               ) /*console.log(`Git initialized repository in ${item.deploymentURL}`)*/
-            : console.log(stdout) &&
+            : console.log(stdout) ||
               statusHandler(
                 stdout,
                 item.deploymentURL,
@@ -79,14 +79,14 @@ module.exports = payload => {
             stdout === null
               ? console.log(
                   `From ${item.gitURL} * branch master -> FETCH_HEAD`
-                ) &&
+                ) ||
                 statusHandler(
                   `From ${item.gitURL} * branch master -> FETCH_HEAD`,
                   item.deploymentURL,
                   item.gitURL,
                   item.userEmail
                 )
-              : console.log(stdout) &&
+              : console.log(stdout) ||
                 statusHandler(
                   stdout,
                   item.deploymentURL,
@@ -127,7 +127,7 @@ module.exports = payload => {
                   `Directory ${getDirName(item.gitURL)} created on ${
                     item.deploymentURL
                   }`
-                ) &&
+                ) ||
                 statusHandler(
                   `Directory ${getDirName(item.gitURL)} created on ${
                     item.deploymentURL
@@ -136,7 +136,7 @@ module.exports = payload => {
                   item.gitURL,
                   item.userEmail
                 )
-              : console.log(stdout) &&
+              : console.log(stdout) ||
                 statusHandler(
                   stdout,
                   item.deploymentURL,
@@ -147,98 +147,104 @@ module.exports = payload => {
         }
       );
       //mkdir should have done it's thing by now, repo should exist
-      if (fs.existsSync(`${item.deploymentURL}${getDirName(item.gitURL)}`)) {
-        console.log(
-          "ITS ALIVE",
-          `${item.deploymentURL}${getDirName(item.gitURL)}`
-        );
-        exec(
-          `git clone ${item.gitURL}`,
-          { cwd: `${item.deploymentURL}\\${getDirName(item.gitURL)}` },
-          (stdout, stderr) => {
-            if (stderr) {
-              console.log(stderr);
-              statusHandler(
-                stderr,
-                item.deploymentURL,
-                item.gitURL,
-                item.userEmail
-              );
-            } else {
-              stdout === null
-                ? console.log(stdout) &&
-                  statusHandler(
-                    `Successfully Cloned ${getDirName(item.gitURL)} into ${
-                      item.deploymentURL
-                    }`,
-                    item.deploymentURL,
-                    item.gitURL,
-                    item.userEmail
-                  )
-                : console.log(stdout) &&
-                  statusHandler(
-                    stdout,
-                    item.deploymentURL,
-                    item.gitURL,
-                    item.userEmail
-                  );
-            }
-          }
-        );
-        exec(
-          `npm install`,
-          { cwd: `${item.deploymentURL}${getDirName(item.gitURL)}` },
-          (stdout, stderr) => {
-            if (stderr) {
-              console.log(
-                "NEW PATH: ",
-                `${item.deploymentURL}\\${getDirName(item.gitURL)}`,
-                stderr
-              );
-              statusHandler(
-                stderr,
-                item.deploymentURL,
-                item.gitURL,
-                item.userEmail
-              );
-            } else {
-              stdout === null
-                ? console.log(stdout) &&
-                  statusHandler(
-                    `npm install complete`,
-                    item.deploymentURL,
-                    item.gitURL,
-                    item.userEmail
-                  )
-                : console.log(stdout) &&
-                  statusHandler(
-                    stdout,
-                    item.deploymentURL,
-                    item.gitURL,
-                    item.userEmail
-                  );
-            }
-          }
-        );
-        scripts.length > 0
-          ? exec(
-              scripts,
-              { cwd: `${item.deploymentURL}${getDirName(item.gitURL)}` },
-              (stdout, stderr) => {
-                stderr
-                  ? console.log(stderr)
-                  : stdout === null
-                  ? console.log("script executed")
-                  : console.log(stdout);
+      setTimeout(() => {
+        if (fs.existsSync(`${item.deploymentURL}${getDirName(item.gitURL)}`)) {
+          console.log(
+            "ITS ALIVE",
+            `${item.deploymentURL}${getDirName(item.gitURL)}`
+          );
+          exec(
+            `git clone ${item.gitURL}`,
+            { cwd: `${item.deploymentURL}` }, //${getDirName(item.gitURL)}
+            (stdout, stderr) => {
+              if (stderr) {
+                console.log(stderr);
+                statusHandler(
+                  stderr,
+                  item.deploymentURL,
+                  item.gitURL,
+                  item.userEmail
+                );
+              } else {
+                stdout === null
+                  ? console.log(
+                      `Successfully Cloned ${getDirName(item.gitURL)} into ${
+                        item.deploymentURL
+                      }`
+                    ) ||
+                    statusHandler(
+                      `Successfully Cloned ${getDirName(item.gitURL)} into ${
+                        item.deploymentURL
+                      }`,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    )
+                  : console.log(stdout) ||
+                    statusHandler(
+                      stdout,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    );
               }
-            )
-          : console.log("script error!");
-      } else {
-        console.log(
-          "IT DOESNT EXIST",
-          `${item.deploymentURL}${getDirName(item.gitURL)}`
-        );
-      }
+            }
+          );
+          exec(
+            `npm install`,
+            { cwd: `${item.deploymentURL}${getDirName(item.gitURL)}` },
+            (stdout, stderr) => {
+              if (stderr) {
+                console.log(
+                  "NEW PATH: ",
+                  `${item.deploymentURL}\\${getDirName(item.gitURL)}`,
+                  stderr
+                );
+                statusHandler(
+                  stderr,
+                  item.deploymentURL,
+                  item.gitURL,
+                  item.userEmail
+                );
+              } else {
+                stdout === null
+                  ? console.log(stdout) ||
+                    statusHandler(
+                      `npm install complete`,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    )
+                  : console.log(stdout) ||
+                    statusHandler(
+                      stdout,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    );
+              }
+            }
+          );
+          scripts.length > 0
+            ? exec(
+                scripts,
+                { cwd: `${item.deploymentURL}${getDirName(item.gitURL)}` },
+                (stdout, stderr) => {
+                  stderr
+                    ? console.log(stderr)
+                    : stdout === null
+                    ? console.log("script executed")
+                    : console.log(stdout);
+                }
+              )
+            : console.log("script error!");
+        } else {
+          console.log(
+            "IT DOESNT EXIST",
+            `${item.deploymentURL}${getDirName(item.gitURL)}`
+          );
+        }
+      }, 5000);
     }
   });
 };
