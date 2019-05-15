@@ -24,7 +24,7 @@ module.exports = payload => {
       console.log(item.deploymentURL, "exists!");
       const initialize = item => {
         return new Promise((resolve, reject) => {
-          exec(`git init`, { cwd: item.deploymentURL }, (stdout, stderr) => {
+          exec(`git init`, { cwd: projectPath }, (stdout, stderr) => {
             if (stderr) {
               if (stderr.includes("fatal: not a git repository")) {
                 statusHandler(
@@ -69,7 +69,7 @@ module.exports = payload => {
         return new Promise((resolve, reject) => {
           exec(
             `git pull ${item.gitURL} master`,
-            { cwd: item.deploymentURL },
+            { cwd: projectPath },
             (stdout, stderr) => {
               if (stderr) {
                 console.log(stderr);
@@ -106,7 +106,7 @@ module.exports = payload => {
       const scriptHandler = () => {
         return new Promise((resolve, reject) => {
           if (scripts.length > 0) {
-            exec(scripts, { cwd: item.deploymentURL }, (stdout, stderr) => {
+            exec(scripts, { cwd: projectPath }, (stdout, stderr) => {
               stderr
                 ? console.log(stderr)
                 : stdout === null
