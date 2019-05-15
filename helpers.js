@@ -14,7 +14,7 @@ statusHandler = (status, deploymentURL, githubURL, user) => {
   axios
     .post("http://query.cityoflewisville.com/v2/", {
       webservice: "ITS/AutoDeployer/Update Status",
-      Subject: `Martin CI Status Update`,
+      Subject: `Status Notification`,
       Status: status,
       DeploymentURL: deploymentURL,
       GithubURL: githubURL,
