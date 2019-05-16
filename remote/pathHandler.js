@@ -52,14 +52,14 @@ module.exports = payload => {
                     item.deploymentURL,
                     item.gitURL,
                     item.userEmail
-                  ) /*console.log(`Git initialized repository in ${item.deploymentURL}`)*/
+                  )
                 : console.log(stdout) ||
                   statusHandler(
                     stdout,
                     item.deploymentURL,
                     item.gitURL,
                     item.userEmail
-                  ); /*console.log(stdout);*/
+                  );
             }
             resolve(item);
           });
