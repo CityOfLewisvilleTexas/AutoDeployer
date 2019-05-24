@@ -53,17 +53,55 @@ module.exports = payload => {
                       item.deploymentURL,
                       item.gitURL,
                       item.userEmail
-                    ) /*console.log(`Git initialized repository in ${item.deploymentURL}`)*/
+                    )
                   : console.log(stdout) ||
                     statusHandler(
-                      stdout,
+                      'No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.',
                       item.deploymentURL,
                       item.gitURL,
                       item.userEmail
-                    ); /*console.log(stdout);*/
+                    );
               }
               resolve(item);
             });
+          });
+        };
+        const pull = item => {
+          return new Promise((resolve, reject) => {
+            exec(
+              `git pull ${item.gitURL} master`,
+              { cwd: projectPath },
+              (stdout, stderr) => {
+                if (stderr) {
+                  console.log(stderr);
+                  statusHandler(
+                    stderr,
+                    item.deploymentURL,
+                    item.gitURL,
+                    item.userEmail
+                  );
+                } else {
+                  stdout === null
+                    ? console.log(
+                        `Git initialized repository in ${item.deploymentURL}`
+                      ) ||
+                      statusHandler(
+                        `Git initialized repository in ${item.deploymentURL}`,
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
+                      ) /*console.log(`Git initialized repository in ${item.deploymentURL}`)*/
+                    : console.log(stdout) ||
+                      statusHandler(
+                        stdout,
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
+                      ); /*console.log(stdout);*/
+                }
+                resolve(item);
+              }
+            );
           });
         };
         const pull = item => {
