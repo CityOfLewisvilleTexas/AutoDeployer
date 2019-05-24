@@ -104,44 +104,6 @@ module.exports = payload => {
             );
           });
         };
-        const pull = item => {
-          return new Promise((resolve, reject) => {
-            exec(
-              `git pull ${item.gitURL} master`,
-              { cwd: projectPath },
-              (stdout, stderr) => {
-                if (stderr) {
-                  console.log(stderr);
-                  statusHandler(
-                    stderr,
-                    item.deploymentURL,
-                    item.gitURL,
-                    item.userEmail
-                  );
-                } else {
-                  stdout === null
-                    ? console.log(
-                        `From ${item.gitURL} * branch master -> FETCH_HEAD`
-                      ) ||
-                      statusHandler(
-                        `From ${item.gitURL} * branch master -> FETCH_HEAD`,
-                        item.deploymentURL,
-                        item.gitURL,
-                        item.userEmail
-                      )
-                    : console.log(stdout) ||
-                      statusHandler(
-                        stdout,
-                        item.deploymentURL,
-                        item.gitURL,
-                        item.userEmail
-                      );
-                }
-                resolve(item);
-              }
-            );
-          });
-        };
         const scriptHandler = () => {
           return new Promise((resolve, reject) => {
             if (scripts.length > 0) {
