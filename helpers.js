@@ -11,18 +11,21 @@ detectOS = () => {
 };
 
 statusHandler = (status, deploymentURL, githubURL, user) => {
-  axios
-    .post("http://query.cityoflewisville.com/v2/", {
-      webservice: "ITS/AutoDeployer/Update Status",
-      Subject: `Status Notification`,
-      Status: status,
-      DeploymentURL: deploymentURL,
-      GithubURL: githubURL,
-      User: user
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
+  return new Promise((resolve, reject) => {
+    axios
+      .post("http://query.cityoflewisville.com/v2/", {
+        webservice: "ITS/AutoDeployer/Update Status",
+        Subject: `Status Notification`,
+        Status: status,
+        DeploymentURL: deploymentURL,
+        GithubURL: githubURL,
+        User: user
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    resolve();
+  });
 };
 
 module.exports = {
