@@ -6,8 +6,6 @@ module.exports = payload => {
   const items = payload["data"][0];
   const OS = detectOS();
 
-  let statusMessages = [];
-
   const deploy = () => {
     return new Promise((resolve, reject) => {
       items.forEach(item => {
@@ -28,24 +26,38 @@ module.exports = payload => {
                 exec(`git init`, { cwd: projectPath }, (stdout, stderr) => {
                   if (stderr) {
                     if (stderr.includes("fatal: not a git repository")) {
-                      statusMessages.push(
-                        'No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.'
+                      statusHandler(
+                        'No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.',
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
                       );
                       return;
                     }
                     console.log(stderr);
-                    statusMessages.push(stderr);
+                    statusHandler(
+                      stderr,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    );
                   } else {
                     stdout === null
                       ? console.log(
                           `Git initialized repository in ${item.deploymentURL}`
                         ) ||
-                        statusMessages.push(
-                          `Git initialized repository in ${item.deploymentURL}`
+                        statusHandler(
+                          `Git initialized repository in ${item.deploymentURL}`,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
                         )
                       : console.log(stdout) ||
-                        statusMessages.push(
-                          'No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.'
+                        statusHandler(
+                          'No Git Repo Associated with this Directory. Please execute "git init" and pull from a valid remote.',
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
                         );
                   }
                   resolve(item);
@@ -60,7 +72,12 @@ module.exports = payload => {
                   (stdout, stderr) => {
                     if (stderr) {
                       console.log(stderr);
-                      statusMessages.push(stderr);
+                      statusHandler(
+                        stderr,
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
+                      );
                     } else {
                       stdout === null
                         ? console.log(
@@ -68,12 +85,21 @@ module.exports = payload => {
                               item.deploymentURL
                             }`
                           ) ||
-                          statusMessages.push(
+                          statusHandler(
                             `Git initialized repository in ${
                               item.deploymentURL
-                            }`
+                            }`,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
                           )
-                        : console.log(stdout) || statusMessages.push(stdout);
+                        : console.log(stdout) ||
+                          statusHandler(
+                            stdout,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
+                          );
                     }
                     resolve(item);
                   }
@@ -86,17 +112,36 @@ module.exports = payload => {
                   exec(scripts, { cwd: projectPath }, (stdout, stderr) => {
                     stderr
                       ? console.log(stderr) ||
-                        statusMessages.push(
-                          `Error on running npm scripts: ${stderr}`
+                        statusHandler(
+                          stderr,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
                         )
                       : stdout === null
                       ? console.log("script executed") ||
-                        statusMessages.push(`${scripts} executed successfully`)
-                      : console.log(stdout) || statusMessages.push(stdout);
+                        statusHandler(
+                          `${scripts} executed successfully`,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
+                        )
+                      : console.log(stdout) ||
+                        statusHandler(
+                          stdout,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
+                        );
                   });
                 } else {
                   console.log("script error!") &&
-                    statusMessages.push("script error!");
+                    statusHandler(
+                      "script error!",
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
+                    );
                 }
                 resolve();
               });
@@ -104,6 +149,7 @@ module.exports = payload => {
             initialize(item)
               .then(pull)
               .then(scriptHandler);
+            //@TODO: replace statusMessages.push with statusHandler()
           } else if (!fs.existsSync(projectPath)) {
             console.log(item.deploymentURL, "does not exist!");
             OS == "win32"
@@ -122,7 +168,12 @@ module.exports = payload => {
                   (stdout, stderr) => {
                     if (stderr) {
                       console.log(stderr);
-                      statusMessages.push(stderr);
+                      statusHandler(
+                        stderr,
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
+                      );
                     } else {
                       stdout === null
                         ? console.log(
@@ -130,12 +181,26 @@ module.exports = payload => {
                               item.deploymentURL
                             }`
                           ) ||
-                          statusMessages.push(
+                          statusHandler(
                             `Directory ${getDirName(item.gitURL)} created on ${
                               item.deploymentURL
-                            }`
+                            }`,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
                           )
-                        : console.log(stdout) || statusMessages.push(stdout);
+                        : // statusMessages.push(
+                          //   `Directory ${getDirName(item.gitURL)} created on ${
+                          //     item.deploymentURL
+                          //   }`
+                          // )
+                          console.log(stdout) ||
+                          statusHandler(
+                            stdout,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
+                          );
                     }
                     resolve(item);
                   }
@@ -152,7 +217,12 @@ module.exports = payload => {
                   (stdout, stderr) => {
                     if (stderr) {
                       console.log(stderr);
-                      statusMessages.push(stderr);
+                      statusHandler(
+                        stderr,
+                        item.deploymentURL,
+                        item.gitURL,
+                        item.userEmail
+                      );
                     } else {
                       stdout === null
                         ? console.log(
@@ -160,12 +230,21 @@ module.exports = payload => {
                               item.gitURL
                             )} into ${item.deploymentURL}`
                           ) ||
-                          statusMessages.push(
+                          statusHandler(
                             `Successfully Cloned ${getDirName(
                               item.gitURL
-                            )} into ${item.deploymentURL}`
+                            )} into ${item.deploymentURL}`,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
                           )
-                        : console.log(stdout) || statusMessages.push(stdout);
+                        : console.log(stdout) ||
+                          statusHandler(
+                            stdout,
+                            item.deploymentURL,
+                            item.gitURL,
+                            item.userEmail
+                          )(stdout);
                     }
                     resolve(item);
                   }
@@ -177,14 +256,28 @@ module.exports = payload => {
                 exec(`npm install`, { cwd: projectPath }, (stdout, stderr) => {
                   if (stderr) {
                     console.log("NEW PATH: ", projectPath, stderr);
-                    statusMessages.push(
-                      `"NEW PATH: ", ${projectPath}, ${stderr}`
+                    statusHandler(
+                      stderr,
+                      item.deploymentURL,
+                      item.gitURL,
+                      item.userEmail
                     );
                   } else {
                     stdout === null
                       ? console.log(stdout) ||
-                        statusMessages.push(`npm install complete`)
-                      : console.log(stdout) || statusMessages.push(stdout);
+                        statusHandler(
+                          `npm install complete`,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
+                        )
+                      : console.log(stdout) ||
+                        statusHandler(
+                          stdout,
+                          item.deploymentURL,
+                          item.gitURL,
+                          item.userEmail
+                        );
                   }
                   resolve(item);
                 });
@@ -216,28 +309,29 @@ module.exports = payload => {
           return;
         }
       });
-      resolve([statusMessages, items]);
+      resolve(); //resolve([statusMessages, items]);
     });
   };
 
-  deploy().then(function([msg, items]) {
-    let prjs = items.filter(item => item["HAS_BEEN_CLONED"] !== true);
-    if (!prjs.length) {
-      statusHandler(
-        "There are no new repositories to clone or integrate!",
-        "not provided",
-        "not provided",
-        "cholmes@cityoflewisville.com"
-      );
-    } else {
-      prjs.forEach(prj => {
-        statusHandler(
-          msg.length < 1 ? "Process Complete" : msg,
-          prj.deploymentURL,
-          prj.gitURL,
-          prj.userEmail
-        );
-      });
-    }
-  });
+  deploy();
+  // .then(function([msg, items]) {
+  //   let prjs = items.filter(item => item["HAS_BEEN_CLONED"] !== true);
+  //   if (!prjs.length) {
+  //     statusHandler(
+  //       "There are no new repositories to clone or integrate!",
+  //       "not provided",
+  //       "not provided",
+  //       "cholmes@cityoflewisville.com"
+  //     );
+  //   } else {
+  //     prjs.forEach(prj => {
+  //       statusHandler(
+  //         msg.length < 1 ? "Process Complete" : msg,
+  //         prj.deploymentURL,
+  //         prj.gitURL,
+  //         prj.userEmail
+  //       );
+  //     });
+  //   }
+  // });
 };
