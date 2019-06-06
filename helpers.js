@@ -29,7 +29,7 @@ statusHandler = (status, deploymentURL, githubURL, user) => {
 };
 
 module.exports = {
-  getDirName: getDirName,
-  detectOS: detectOS,
-  statusHandler: statusHandler
+  getDirName,
+  detectOS,
+  statusHandler
 };
