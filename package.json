@@ -34,7 +34,7 @@
     "body-parser": "^1.18.3",
     "child_process": "^1.0.2",
     "dotenv": "^7.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "file-system": "^2.2.2",
     "forever": "^1.0.0",
     "http": "0.0.0",
